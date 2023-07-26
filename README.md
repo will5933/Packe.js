@@ -18,7 +18,7 @@ This is a module witch provides delicate elements.
   <packe-btn type="confirm"></packe-btn>
   <!--
     Necessary attrbite: 
-      type= confirm/continue/cancel/delete/finish
+      type=confirm/continue/cancel/delete/finish
     Opational attrbites: 
       background, color, value
   -->

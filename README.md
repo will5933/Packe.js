@@ -12,7 +12,7 @@ This is a module witch provides delicate elements.
   <packe-input></packe-input>
   <!--
     Opational attrbites: 
-      placeholder/background/color/value
+      placeholder/value
   -->
 
   <packe-btn type="confirm"></packe-btn>
@@ -20,7 +20,7 @@ This is a module witch provides delicate elements.
     Necessary attrbite: 
       type=confirm/continue/cancel/delete/finish
     Opational attrbites: 
-      background/color/value
+      value
   -->
 ```
 

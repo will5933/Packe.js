@@ -3,14 +3,23 @@
   MIT License(mit-license.org)
   Moris 2023
 */
+
+/*
+  attribute (set only)
+      ele.setAttribute(--, --)
+  property (get & set)
+      ele[--] = --
+*/
 'use strict'
 
 export class PackeInput extends HTMLElement {
   constructor() {
     super()
-    this.attachShadow({ mode: 'open' })
+    const shadow = this.attachShadow({ mode: 'closed' })
     this.styles = document.createElement('style')
     this.input = document.createElement('input')
+    shadow.appendChild(this.styles)
+    shadow.appendChild(this.input)
   }
   connectedCallback() {
     this.styles.innerHTML = `
@@ -28,26 +37,18 @@ export class PackeInput extends HTMLElement {
     `
     this.input.placeholder = 'Type something here...'
     this.input.classList.add('blur')
-    this.input.addEventListener('focus', () => {
-      this.input.classList.remove('blur')
-      this.input.classList.add('focus')
-    })
-    this.input.addEventListener('blur', () => {
-      this.input.classList.remove('focus')
-      this.input.classList.add('blur')
-    })
-    this.shadowRoot.appendChild(this.styles)
-    this.shadowRoot.appendChild(this.input)
+
+    this.input.addEventListener('focus', () => { this.input.classList.replace('blur', 'focus') })
+    this.input.addEventListener('blur', () => { this.input.classList.replace('focus', 'blur') })
   }
-  static get observedAttributes() {
-    return ['placeholder', 'background', 'color', 'value']
-  }
+  static get observedAttributes() { return ['placeholder', 'value'] }
   attributeChangedCallback(name, oldValue, newValue) {
-    if (['value', 'placeholder'].includes(name))
-      this.input[name] = newValue
-    else (['color', 'background'].includes(name))
-      this.input.style[name] = newValue
+    this.input[name] = newValue
   }
+  set value(v) { this.input.value = v }
+  get value() { return this.input.value }
+  set placeholder(v) { this.input.placeholder = v }
+  get placeholder() { return this.input.placeholder }
 }
 
 
@@ -55,12 +56,11 @@ export class PackeBtn extends HTMLElement {
   constructor() {
     super()
     this.typeList = ['confirm', 'cancel', 'delete', 'continue', 'finish']
-    this.attachShadow({ mode: 'open' })
+    const shadow = this.attachShadow({ mode: 'closed' })
     this.styles = document.createElement('style')
     this.btn = document.createElement('div')
-  }
-  static get observedAttributes() {
-    return ['background', 'color', 'type', 'value']
+    shadow.appendChild(this.styles)
+    shadow.appendChild(this.btn)
   }
   connectedCallback() {
     this.styles.innerHTML = `
@@ -83,34 +83,68 @@ export class PackeBtn extends HTMLElement {
       div.click {transform:scale(0.94);box-shadow:none !important;}
     `
     if (!this.getAttribute('type'))
-      this.setAttribute('type', this.typeList[0])
+      this.setAttribute('type', this.typeList[1])
+    if (!this.getAttribute('value'))
+      this.btn.innerText = this.getAttribute('type')
 
     this.btn.addEventListener('click', () => {
       this.btn.classList.add('click')
-      setTimeout(() => {
-        this.btn.classList.remove('click')
-      }, 100);
+      setTimeout(() => { this.btn.classList.remove('click') }, 100);
     })
-
-    this.shadowRoot.appendChild(this.styles)
-    this.shadowRoot.appendChild(this.btn)
   }
+  static get observedAttributes() { return ['type', 'value'] }
   attributeChangedCallback(name, oldValue, newValue) {
-    if ('type' === name)
-      this.changeType(newValue)
-    else if ('value' === name && newValue)
-      this.btn.innerHTML = newValue
-    else this.btn.style[name] = newValue
+    if (name === 'type') this.changeType(newValue)
+    else if (name === 'value') this.btn.innerText = newValue
   }
   changeType(v) {
-    if (this.typeList.includes(v))
-      this.btn.className = v
-    if (!this.getAttribute('value'))
-      this.btn.innerHTML = v
+    if (this.typeList.includes(v)) this.btn.className = v
   }
+  set type(v) { this.changeType(v) }
+  get type() { return this.btn.className }
+  set value(v) { this.btn.innerText = v }
+  get value() { return this.btn.innerText }
 }
 
 
-// Define
+export class PackeCheckbox extends HTMLElement {
+  constructor() {
+    super()
+    const shadow = this.attachShadow({ mode: 'closed' })
+    this.styles = document.createElement('style')
+    this.checkbox = document.createElement('div')
+    this.img = document.createElement('div')
+    this.text = document.createElement('span')
+    this.checkbox.appendChild(this.img)
+    this.checkbox.appendChild(this.text)
+    shadow.appendChild(this.styles)
+    shadow.appendChild(this.checkbox)
+  }
+  connectedCallback() {
+    // this.styles.innerHTML = `
+    //   :host {position:relative;display:block;width:14em;height:2.2em;margin:8px;}
+    // `
+
+    this.checkbox.addEventListener('click', () => {
+      // this.input.classList.replace('blur', 'focus')
+    })
+  }
+  static get observedAttributes() { return ['checked', 'value'] }
+  attributeChangedCallback(name, oldValue, newValue) {
+    if (name === 'checked') this.changeState()
+    else this.text.innerText = newValue
+  }
+  changeState() {
+    this.checked = this.checked ? false : true
+    this.checkbox.className = this.checked ? 'checked' : 'unchecked'
+  }
+  set value(v) { this.text.innerText = v }
+  get value() { return this.text.innerText }
+  // set checked(v) { this.checkbox.placeholder = v }
+  // get checked() { return this.checkbox.placeholder }
+}
+
+// Defination
 customElements.define('packe-input', PackeInput)
 customElements.define('packe-btn', PackeBtn)
+customElements.define('packe-checkbox', PackeCheckbox)

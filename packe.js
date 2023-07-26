@@ -21,7 +21,7 @@ export class PackeInput extends HTMLElement {
         :host {position:relative;display:block;width:14em;height:2.2em;margin:8px;}
         input {color:${default_color};background:${default_bgcolor};outline:none;border:none;padding:0.5em;
           border-radius:0.5em;font-size:1em;font-weight:600;caret-color:currentColor;
-          width:calc(100% - 1em);height:calc(100% - 1em);letter-spacing:0.05em;}
+          width:calc(100% - 1em);height:calc(100% - 1em);}
         input.focus {animation: 0.3s ease focus forwards;}
         input.blur {animation: 0.3s ease blur forwards};
         input::placeholder {color:${placeholder_color};}
@@ -66,8 +66,8 @@ export class PackeBtn extends HTMLElement {
       <style>
         :host {position:relative;display:block;width:fit-content;height:2.2em;margin:8px;}
         div {position:absolute;top:0;left:0;padding:0.5em;border-radius:0.5em;
-          font-size:1em;font-weight:800;width:fit-content;height:calc(100% - 1em);user-select:none;
-          transform:translateZ(0);display:flex;justify-content:center;align-content:center;
+          font-size:1em;font-weight:800;width:max-content;height:calc(100% - 1em);user-select:none;
+          transform:translateZ(0);display:flex;justify-content:center;align-items:center;
           transition:color 0.3s,background 0.3s,transform 0.1s ease,box-shadow 0.1s ease;
         }
         div.confirm {color:#006600;background:#b3e6b3;box-shadow:0 1px 1px 1px #00660044;}
@@ -94,14 +94,16 @@ export class PackeBtn extends HTMLElement {
     shadow.appendChild(this.btn)
   }
   static get observedAttributes() {
-    return ['background', 'color', 'type']
+    return ['background', 'color', 'type', 'value']
   }
   connectedCallback() { }
   attributeChangedCallback(name, oldValue, newValue) {
     if ('type' === name)
       this.changeType(newValue)
-    else (['color', 'background'].includes(name))
-    this.btn.style[name] = newValue
+    else if ('value' === name)
+      if (newValue) this.btn.innerHTML = newValue
+    else if (['color', 'background'].includes(name))
+      this.btn.style[name] = newValue
   }
   changeType(v) {
     if (this.typeList.includes(v))

@@ -8,31 +8,25 @@
 export class PackeInput extends HTMLElement {
   constructor() {
     super()
-    const default_bgcolor = '#eee',
-      default_color = '#666',
-      selection_bgcolor = '#bb93d5',
-      selection_color = '#000',
-      placeholder_color = '#aaa',
-      placeholder = 'Type something here...'
-
-    const shadow = this.attachShadow({ mode: 'open' })
-    shadow.innerHTML = `
-      <style>
-        :host {position:relative;display:block;width:14em;height:2.2em;margin:8px;}
-        input {color:${default_color};background:${default_bgcolor};outline:none;border:none;padding:0.5em;
-          border-radius:0.5em;font-size:1em;font-weight:600;caret-color:currentColor;
-          width:calc(100% - 1em);height:calc(100% - 1em);}
-        input.focus {animation: 0.3s ease focus forwards;}
-        input.blur {animation: 0.3s ease blur forwards};
-        input::placeholder {color:${placeholder_color};}
-        input::selection {color:${selection_color};background-color:${selection_bgcolor};}
-        input::-moz-selection {color:${selection_color};background-color:${selection_bgcolor};}
-        @keyframes focus {50%{box-shadow:none;} 100%{box-shadow:0 1px 1px 1px #0002 inset;}}
-        @keyframes blur {50%{box-shadow:none;} 100%{box-shadow:0 1px 1px 1px #0002;}}
-      </style>
-    `
+    this.attachShadow({ mode: 'open' })
+    this.styles = document.createElement('style')
     this.input = document.createElement('input')
-    this.input.placeholder = placeholder
+  }
+  connectedCallback() {
+    this.styles.innerHTML = `
+      :host {position:relative;display:block;width:14em;height:2.2em;margin:8px;}
+      input {color:#666;background:#eee;outline:none;border:none;padding:0.5em;
+        border-radius:0.5em;font-size:1em;font-weight:600;caret-color:currentColor;
+        width:calc(100% - 1em);height:calc(100% - 1em);}
+      input.focus {animation: 0.3s ease focus forwards;}
+      input.blur {animation: 0.3s ease blur forwards};
+      input::placeholder {color:#aaa;}
+      input::selection {color:'#000';background-color:#bb93d5;}
+      input::-moz-selection {color:'#000';background-color:#bb93d5;}
+      @keyframes focus {50%{box-shadow:none;} 100%{box-shadow:0 1px 1px 1px #0002 inset;}}
+      @keyframes blur {50%{box-shadow:none;} 100%{box-shadow:0 1px 1px 1px #0002;}}
+    `
+    this.input.placeholder = 'Type something here...'
     this.input.classList.add('blur')
     this.input.addEventListener('focus', () => {
       this.input.classList.remove('blur')
@@ -42,7 +36,8 @@ export class PackeInput extends HTMLElement {
       this.input.classList.remove('focus')
       this.input.classList.add('blur')
     })
-    shadow.appendChild(this.input)
+    this.shadowRoot.appendChild(this.styles)
+    this.shadowRoot.appendChild(this.input)
   }
   static get observedAttributes() {
     return ['placeholder', 'background', 'color', 'value']
@@ -51,7 +46,7 @@ export class PackeInput extends HTMLElement {
     if (['value', 'placeholder'].includes(name))
       this.input[name] = newValue
     else (['color', 'background'].includes(name))
-    this.input.style[name] = newValue
+      this.input.style[name] = newValue
   }
 }
 
@@ -68,9 +63,6 @@ export class PackeBtn extends HTMLElement {
     return ['background', 'color', 'type', 'value']
   }
   connectedCallback() {
-    this.shadowRoot.appendChild(this.styles)
-    this.shadowRoot.appendChild(this.btn)
-
     this.styles.innerHTML = `
       :host {position:relative;display:block;width:fit-content;height:2.2em;margin:8px;}
       div {position:absolute;top:0;left:0;padding:0.5em;border-radius:0.5em;
@@ -99,6 +91,9 @@ export class PackeBtn extends HTMLElement {
         this.btn.classList.remove('click')
       }, 100);
     })
+
+    this.shadowRoot.appendChild(this.styles)
+    this.shadowRoot.appendChild(this.btn)
   }
   attributeChangedCallback(name, oldValue, newValue) {
     if ('type' === name)

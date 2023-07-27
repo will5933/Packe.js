@@ -21,8 +21,10 @@
 <!-- Provided property: thc/checked/value -->
 ```
 
+> `thc` means themecolor
+
 ## Use
-### Set/Get provided property
+### Set / Get provided property
 ```javascript
 // set
 document.querySelector('packe- ... ').thc/value ... = ...
@@ -34,9 +36,9 @@ document.querySelector('packe- ... ')['thc'/'value' ...]
 ```
 
 > #### Provided property
-> `packe-input` placeholder/value  
-> `packe-button` thc/value  
-> `packe-checkbox` thc/checked/value  
+> `<packe-input>`: *placeholder* / *value*  
+> `<packe-button>`: *thc* / *value*  
+> `<packe-checkbox>`: *thc* / *checked* / *value*  
 
 ### Listen events
 ```javascript

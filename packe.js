@@ -12,16 +12,12 @@
 */
 'use strict'
 
-export class PackeInput extends HTMLElement {
+class PackeInput extends HTMLElement {
   constructor() {
     super()
     const shadow = this.attachShadow({ mode: 'closed' })
     this.styles = document.createElement('style')
     this.input = document.createElement('input')
-    shadow.appendChild(this.styles)
-    shadow.appendChild(this.input)
-  }
-  connectedCallback() {
     this.styles.innerHTML = `
       :host {position:relative;display:block;width:14em;height:2.2em;margin:4px;}
       input {color:#666;background:#eee;outline:none;border:none;padding:0.5em;
@@ -37,7 +33,10 @@ export class PackeInput extends HTMLElement {
     `
     this.input.placeholder = 'Type something here...'
     this.input.classList.add('blur')
-
+    shadow.appendChild(this.styles)
+    shadow.appendChild(this.input)
+  }
+  connectedCallback() {
     this.input.addEventListener('focus', () => { this.input.classList.replace('blur', 'focus') })
     this.input.addEventListener('blur', () => { this.input.classList.replace('focus', 'blur') })
   }
@@ -52,7 +51,7 @@ export class PackeInput extends HTMLElement {
 }
 
 
-export class Packebutton extends HTMLElement {
+class PackeButton extends HTMLElement {
   constructor() {
     super()
     this.themecolorList = ['green', 'gray', 'red', 'cyan', 'violet', 'yellow']
@@ -60,10 +59,6 @@ export class Packebutton extends HTMLElement {
     const shadow = this.attachShadow({ mode: 'closed' })
     this.styles = document.createElement('style')
     this.button = document.createElement('div')
-    shadow.appendChild(this.styles)
-    shadow.appendChild(this.button)
-  }
-  connectedCallback() {
     this.styles.innerHTML = `
       :host {position:relative;display:block;width:fit-content;height:2.2em;margin:4px;}
       div {position:relative;padding:0.5em;border-radius:0.5em;
@@ -85,6 +80,10 @@ export class Packebutton extends HTMLElement {
       div.yellow:hover {color:#333000;background:#dfda9f;box-shadow:0 1px 2px 1px #66600066;}
       div.click {transform:scale(0.94);box-shadow:none !important;}
     `
+    shadow.appendChild(this.styles)
+    shadow.appendChild(this.button)
+  }
+  connectedCallback() {
     this.changeThc(this.themecolor)
     if (!this.getAttribute('value')) this.button.innerText = 'Button'
 
@@ -111,12 +110,13 @@ export class Packebutton extends HTMLElement {
 }
 
 
-export class PackeCheckbox extends HTMLElement {
+class PackeCheckbox extends HTMLElement {
   constructor() {
     super()
     this.themecolorList = ['green', 'cyan', 'violet', 'red', 'yellow']
     this.themecolor = this.themecolorList[0]
     const shadow = this.attachShadow({ mode: 'closed' })
+    this.$checked = false
     this.styles = document.createElement('style')
     this.checkbox = document.createElement('div')
     this.svgbox = document.createElement('div')
@@ -126,10 +126,6 @@ export class PackeCheckbox extends HTMLElement {
     this.text = document.createElement('span')
     this.checkbox.appendChild(this.svgbox)
     this.checkbox.appendChild(this.text)
-    shadow.appendChild(this.styles)
-    shadow.appendChild(this.checkbox)
-  }
-  connectedCallback() {
     this.styles.innerHTML = `
       :host {position:relative;display:block;width:fit-content;height:2.2em;margin:4px;}
       #checkbox {position:relative;padding:0.5em;border-radius:0.5em;
@@ -159,34 +155,89 @@ export class PackeCheckbox extends HTMLElement {
         <path id="unchecked" stroke="#bbb" d="M 35.5 50 m -22.5 0 a 22.5 22.5 0 1 0 75 0 a 22.5 22.5 0 1 0 -75 0" stroke-width="16" stroke-linecap="round" fill="none"></path>
       </svg>
     `
-    this.checkbox.addEventListener('click', () => this.changeState())
+    shadow.appendChild(this.styles)
+    shadow.appendChild(this.checkbox)
   }
+  connectedCallback() {
+    this.checkbox.addEventListener('click', () => this.toggleState(!this.$checked))
+  }
+  // disconnectedCallback() {}
   static get observedAttributes() { return ['checked', 'value', 'thc'] }
   attributeChangedCallback(name, oldValue, newValue) {
-    if (name === 'checked') this.changeState()
+    if (name === 'checked') this.toggleState(newValue === 'true')
     else if (name === 'value') this.text.innerText = newValue
     else if (this.themecolorList.includes(newValue)) {
       this.themecolor = newValue
-      this.changeState('notoggle')
+      this.checkbox.className = this.$checked ? `checked ${this.themecolor}` : 'unchecked'
     }
   }
-  changeState(themecolor) {
-    if (!themecolor) this.checked = this.checked ? false : true
-    this.checkbox.className = this.checked ? `checked ${this.themecolor}` : 'unchecked'
+  toggleState(to) {
+    this.$checked = to ? true : false
+    this.checkbox.className = to ? `checked ${this.themecolor}` : 'unchecked'
   }
   set thc(v) {
     if (this.themecolorList.includes(v)) {
       this.themecolor = v
-      this.changeState('notoggle')
+      this.checkbox.className = this.$checked ? `checked ${this.themecolor}` : 'unchecked'
     }
   }
   get thc() { return this.themecolor }
   set value(v) { this.text.innerText = v }
   get value() { return this.text.innerText }
+  set checked(v) { this.toggleState(v) }
+  get checked() { return this.$checked }
 }
+
+
+class PackeTab extends HTMLElement {
+  constructor() {
+    super()
+    this.themecolorList = ['green', 'cyan', 'violet', 'red', 'yellow']
+    this.themecolor = this.themecolorList[0]
+    this.styles = document.createElement('style')
+    this.styles.innerHTML = `
+      packe-tab {position:relative;display:block;min-width:20em;min-height:20em;margin:4px;
+        border:2px solid #ddd;border-radius:6px;overflow:hidden;}
+      titlebar {position:absolute;width:100%;height:2.2em;border-bottom:2px solid #ddd;;
+        display:flex;justify-content:space-evenly;align-items:flex-end;}
+      titlebar>span {padding:0 1em;border-bottom:6px solid #aaddaa;
+        user-select:none;font-weight:600;}
+      panel {position:absolute;top:2.2em;left:0;width:100%;height:calc(100% - 2.2em);
+        overflow-x:auto;overflow-y:hidden;white-space:nowrap;}
+      sheet {display:inline-block;width:100%;height:0;}
+      panel::-webkit-scrollbar {width:0.4em;height:0.4em;background-color:transparent;}
+      panel::-webkit-scrollbar-thumb {background-color:transparent;border-radius:0.1em;}
+      panel:hover::-webkit-scrollbar-thumb {background-color:#0004;}
+    `
+  }
+  connectedCallback() { this.rander() }
+  rander() {
+    this.appendChild(this.styles)
+    for (const ele of this.querySelectorAll('panel>:not(sheet)')) { ele.remove() }
+    const titleList = []
+    for (const sheet of this.querySelectorAll('sheet')) {
+      titleList.push(
+        `<span>${sheet.getAttribute('title') ? sheet.getAttribute('title') : 'Untitled'}</span>`
+      )
+    }
+    this.querySelector('titleBar').innerHTML = titleList.join('')
+  }
+  static get observedAttributes() { return ['thc'] }
+  attributeChangedCallback(name, oldValue, newValue) { }
+  randerThemecolor() { }
+  set thc(v) {
+    if (this.themecolorList.includes(v)) {
+      this.themecolor = v
+      this.randerThemecolor()
+    }
+  }
+  get thc() { return this.themecolor }
+}
+
 
 
 // Defination
 customElements.define('packe-input', PackeInput)
-customElements.define('packe-button', Packebutton)
+customElements.define('packe-button', PackeButton)
 customElements.define('packe-checkbox', PackeCheckbox)
+customElements.define('packe-tab', PackeTab)

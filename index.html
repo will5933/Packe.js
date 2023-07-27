@@ -14,7 +14,7 @@
       font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
     }
 
-    div {
+    body>div {
       display: flex;
       align-items: center;
       justify-content: center;
@@ -22,10 +22,10 @@
     }
   </style>
 
-  <h2>input</h2>
+  <h2>packe-input</h2>
   <packe-input>hahaha</packe-input>
 
-  <h2>button</h2>
+  <h2>packe-button</h2>
   <div>
     <packe-button></packe-button>
     <packe-button thc="green">hahahha</packe-button>
@@ -42,7 +42,7 @@
     <packe-button thc="yellow" value="警告"></packe-button>
   </div>
 
-  <h2>checkbox</h2>
+  <h2>packe-checkbox</h2>
   <div>
     <packe-checkbox value="Pear" checked="true"></packe-checkbox>
     <packe-checkbox checked="true" thc="yellow" value="Banana"></packe-checkbox>
@@ -50,6 +50,23 @@
     <packe-checkbox thc="cyan" value="Cyan" checked="true"></packe-checkbox>
     <packe-checkbox checked="true" thc="violet" value="Grape"></packe-checkbox>
   </div>
+
+  <h2>packe-tab titlebar panel sheet</h2>
+  <div>
+    <packe-tab thc="gray">
+      <titlebar></titlebar>
+      <panel>
+        <sheet title="sheet 1">
+          <packe-checkbox thc="cyan" value="Button" checked="false"></packe-checkbox>
+        </sheet>
+        <sheet></sheet>
+
+        <!-- Illegal expression -->
+        <packe-checkbox checked="true" thc="violet" value="Grape"></packe-checkbox>
+      </panel>
+    </packe-tab>
+  </div>
+
 
 
   <script type="module" src="/packe.js"></script>

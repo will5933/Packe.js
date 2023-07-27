@@ -81,7 +81,7 @@ export class PackeBtn extends HTMLElement {
       div.violet {color:#440066;background:#d5b3e6;box-shadow:0 1px 1px 1px #44006644;}
       div.violet:hover {color:#220033;background:#ca9fdf;box-shadow:0 1px 2px 1px #44006666;}
       div.yellow {color:#666000;background:#e6e2b3;box-shadow:0 1px 1px 1px #66600044;}
-      div.yellow:hover {color:#333000;background:#d9d28c;box-shadow:0 1px 2px 1px #66600066;}
+      div.yellow:hover {color:#333000;background:#dfda9f;box-shadow:0 1px 2px 1px #66600066;}
       div.click {transform:scale(0.94);box-shadow:none !important;}
     `
     if (!this.getAttribute('thc'))

@@ -52,15 +52,16 @@ export class PackeInput extends HTMLElement {
 }
 
 
-export class PackeBtn extends HTMLElement {
+export class Packebutton extends HTMLElement {
   constructor() {
     super()
-    this.thcList = ['green', 'gray', 'red', 'cyan', 'violet', 'yellow']
+    this.themecolorList = ['green', 'gray', 'red', 'cyan', 'violet', 'yellow']
+    this.themecolor = this.themecolorList[1]
     const shadow = this.attachShadow({ mode: 'closed' })
     this.styles = document.createElement('style')
-    this.btn = document.createElement('div')
+    this.button = document.createElement('div')
     shadow.appendChild(this.styles)
-    shadow.appendChild(this.btn)
+    shadow.appendChild(this.button)
   }
   connectedCallback() {
     this.styles.innerHTML = `
@@ -84,28 +85,29 @@ export class PackeBtn extends HTMLElement {
       div.yellow:hover {color:#333000;background:#dfda9f;box-shadow:0 1px 2px 1px #66600066;}
       div.click {transform:scale(0.94);box-shadow:none !important;}
     `
-    if (!this.getAttribute('thc'))
-      this.setAttribute('thc', this.thcList[1])
-    if (!this.getAttribute('value'))
-      this.btn.innerText = this.getAttribute('thc')
+    this.changeThc(this.themecolor)
+    if (!this.getAttribute('value')) this.button.innerText = 'Button'
 
-    this.btn.addEventListener('click', () => {
-      this.btn.classList.add('click')
-      setTimeout(() => { this.btn.classList.remove('click') }, 100);
+    this.button.addEventListener('click', () => {
+      this.button.classList.add('click')
+      setTimeout(() => { this.button.classList.remove('click') }, 100);
     })
   }
   static get observedAttributes() { return ['thc', 'value'] }
   attributeChangedCallback(name, oldValue, newValue) {
     if (name === 'thc') this.changeThc(newValue)
-    else if (name === 'value') this.btn.innerText = newValue
+    else if (name === 'value') this.button.innerText = newValue
   }
   changeThc(v) {
-    if (this.thcList.includes(v)) this.btn.className = v
+    if (this.themecolorList.includes(v)) {
+      this.themecolor = v
+      this.button.className = v
+    }
   }
   set thc(v) { this.changeThc(v) }
-  get thc() { return this.btn.className }
-  set value(v) { this.btn.innerText = v }
-  get value() { return this.btn.innerText }
+  get thc() { return this.themecolor }
+  set value(v) { this.button.innerText = v }
+  get value() { return this.button.innerText }
 }
 
 
@@ -172,6 +174,13 @@ export class PackeCheckbox extends HTMLElement {
     if (!themecolor) this.checked = this.checked ? false : true
     this.checkbox.className = this.checked ? `checked ${this.themecolor}` : 'unchecked'
   }
+  set thc(v) {
+    if (this.themecolorList.includes(v)) {
+      this.themecolor = v
+      this.changeState('notoggle')
+    }
+  }
+  get thc() { return this.themecolor }
   set value(v) { this.text.innerText = v }
   get value() { return this.text.innerText }
 }
@@ -179,5 +188,5 @@ export class PackeCheckbox extends HTMLElement {
 
 // Defination
 customElements.define('packe-input', PackeInput)
-customElements.define('packe-btn', PackeBtn)
+customElements.define('packe-button', Packebutton)
 customElements.define('packe-checkbox', PackeCheckbox)

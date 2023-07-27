@@ -23,23 +23,23 @@
   </style>
 
   <h2>input</h2>
-  <packe-input></packe-input>
+  <packe-input>hahaha</packe-input>
 
-  <h2>btn</h2>
+  <h2>button</h2>
   <div>
-    <packe-btn></packe-btn>
-    <packe-btn thc="green"></packe-btn>
-    <packe-btn thc="green" value="确认"></packe-btn>
-    <packe-btn thc="gray"></packe-btn>
-    <packe-btn thc="gray" value="取消"></packe-btn>
-    <packe-btn thc="red"></packe-btn>
-    <packe-btn thc="red" value="删除"></packe-btn>
-    <packe-btn thc="cyan"></packe-btn>
-    <packe-btn thc="cyan" value="下一步"></packe-btn>
-    <packe-btn thc="violet"></packe-btn>
-    <packe-btn thc="violet" value="完成"></packe-btn>
-    <packe-btn thc="yellow"></packe-btn>
-    <packe-btn thc="yellow" value="警告"></packe-btn>
+    <packe-button></packe-button>
+    <packe-button thc="green">hahahha</packe-button>
+    <packe-button thc="green" value="确认"></packe-button>
+    <packe-button thc="gray"></packe-button>
+    <packe-button thc="gray" value="取消"></packe-button>
+    <packe-button thc="red"></packe-button>
+    <packe-button thc="red" value="删除"></packe-button>
+    <packe-button thc="cyan"></packe-button>
+    <packe-button thc="cyan" value="下一步"></packe-button>
+    <packe-button thc="violet"></packe-button>
+    <packe-button thc="violet" value="完成"></packe-button>
+    <packe-button thc="yellow"></packe-button>
+    <packe-button thc="yellow" value="警告"></packe-button>
   </div>
 
   <h2>checkbox</h2>
@@ -50,8 +50,21 @@
     <packe-checkbox thc="cyan" value="Cyan" checked="true"></packe-checkbox>
     <packe-checkbox checked="true" thc="violet" value="Grape"></packe-checkbox>
   </div>
+
+
   <script type="module" src="/packe.js"></script>
-  <script></script>
+  <script>
+    document.querySelector('packe-input').addEventListener('input', (e) => {
+      console.log('<packe-input> input event', e.target, e.target.value)
+    })
+
+
+    document.querySelectorAll('packe-button').forEach(ele => {
+      ele.addEventListener('click', (e) => {
+        console.log('<packe-button> click event', e.target, e.target.value)
+      })
+    })
+  </script>
 </body>
 
 </html>

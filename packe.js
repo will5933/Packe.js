@@ -113,20 +113,41 @@ export class PackeCheckbox extends HTMLElement {
     const shadow = this.attachShadow({ mode: 'closed' })
     this.styles = document.createElement('style')
     this.checkbox = document.createElement('div')
-    this.img = document.createElement('div')
+    this.svgbox = document.createElement('div')
+    this.checkbox.id = 'checkbox'
+    this.checkbox.className = 'unchecked'
+    this.svgbox.id = 'svgbox'
     this.text = document.createElement('span')
-    this.checkbox.appendChild(this.img)
+    this.checkbox.appendChild(this.svgbox)
     this.checkbox.appendChild(this.text)
     shadow.appendChild(this.styles)
     shadow.appendChild(this.checkbox)
   }
   connectedCallback() {
-    // this.styles.innerHTML = `
-    //   :host {position:relative;display:block;width:14em;height:2.2em;margin:8px;}
-    // `
-
+    this.styles.innerHTML = `
+      :host {position:relative;display:block;width:14em;height:2.2em;margin:8px;}
+      #checkbox {position:absolute;top:0;left:0;padding:0.5em;border-radius:0.5em;
+        font-size:1em;font-weight:800;width:max-content;height:100%;user-select:none;
+        transform:translateZ(0);transition:all 0.3s;
+        display:flex;align-items:center;box-sizing:border-box;}
+      #checkbox.checked {color:#006600;background:#00660044;border:2px solid #00660044;}
+      #checkbox.unchecked {color:#666;border:2px solid #ddd;}
+      #svgbox {position:absolute;left:0.5em;width:1em;height:1em;visibility: hidden;opacity:0;
+        transition:opacity 0.3s;}
+      #checkbox.unchecked #checked {display:none;}
+      #checkbox.checked #unchecked {display:none;}
+      svg#checked {fill:#006600;}
+      svg#unchecked {fill:#aaa;}
+      span {transition:margin 0.3s ease;}
+      #checkbox:hover>span {margin:0 0 0 1.4em;}
+      #checkbox:hover>#svgbox {visibility: visible;opacity:1;}
+    `
+    this.svgbox.innerHTML = `
+      <svg id="unchecked" viewBox="0 0 512 512" fill="none" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M256 512C397.385 512 512 397.385 512 256C512 114.615 397.385 0 256 0C114.615 0 0 114.615 0 256C0 397.385 114.615 512 256 512ZM256 437C355.964 437 437 355.964 437 256C437 156.036 355.964 75 256 75C156.036 75 75 156.036 75 256C75 355.964 156.036 437 256 437Z"/></svg>      
+      <svg id="checked" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path d="M438.6 105.4c12.5 12.5 12.5 32.8 0 45.3l-256 256c-12.5 12.5-32.8 12.5-45.3 0l-128-128c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0L160 338.7 393.4 105.4c12.5-12.5 32.8-12.5 45.3 0z"/></svg>
+    `
     this.checkbox.addEventListener('click', () => {
-      // this.input.classList.replace('blur', 'focus')
+      this.changeState()
     })
   }
   static get observedAttributes() { return ['checked', 'value'] }
@@ -140,9 +161,8 @@ export class PackeCheckbox extends HTMLElement {
   }
   set value(v) { this.text.innerText = v }
   get value() { return this.text.innerText }
-  // set checked(v) { this.checkbox.placeholder = v }
-  // get checked() { return this.checkbox.placeholder }
 }
+
 
 // Defination
 customElements.define('packe-input', PackeInput)

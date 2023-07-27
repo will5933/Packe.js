@@ -7,6 +7,8 @@
 
 ## Provided Elements
 
+![](/img/a1.png)
+
 ```HTML
 <packe-input></packe-input>
 <packe-input placeholder="--" value="---"></packe-input>

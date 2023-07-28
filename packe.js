@@ -22,7 +22,7 @@ class PackeInput extends HTMLElement {
       :host {position:relative;display:block;width:14em;height:2.2em;margin:4px;}
       input {color:#666;background:#eee;outline:none;border:none;padding:0.5em;
         border-radius:0.5em;font-size:1em;font-weight:600;caret-color:currentColor;
-        width:calc(100% - 1em);height:calc(100% - 1em);}
+        width:100%;height:100%;box-sizing:border-box;}
       input.focus {animation: 0.3s ease focus forwards;}
       input.blur {animation: 0.3s ease blur forwards};
       input::placeholder {color:#aaa;}
@@ -132,12 +132,12 @@ class PackeCheckbox extends HTMLElement {
         font-size:1em;font-weight:800;width:max-content;height:100%;user-select:none;
         transform:translateZ(0);transition:all 0.3s;
         display:flex;align-items:center;box-sizing:border-box;}
-      #checkbox.green {color:#006600;background:#00660044;border:2px solid #00660044;}
-      #checkbox.cyan {color:#006666;background:#00666644;border:2px solid #00666644;}
-      #checkbox.yellow {color:#666000;background:#66600044;border:2px solid #66600044;}
-      #checkbox.red {color:#661100;background:#66110044;border:2px solid #66110044;}
-      #checkbox.violet {color:#440066;background:#44006644;border:2px solid #44006644;}
-      #checkbox.unchecked {color:#666;border:2px solid #ddd;}
+      #checkbox.green {color:#006600;background:#BBD6BB;border:2px solid #00660044;}
+      #checkbox.cyan {color:#006666;background:#BBD6D6;border:2px solid #00666644;}
+      #checkbox.yellow {color:#666000;background:#D6D5BB;border:2px solid #66600044;}
+      #checkbox.red {color:#661100;background:#D6C0BB;border:2px solid #66110044;}
+      #checkbox.violet {color:#440066;background:#CDBBD6;border:2px solid #44006644;}
+      #checkbox.unchecked {color:#666;background:#fff;border:2px solid #ddd;}
       #svgbox {position:absolute;left:0.5em;width:1em;height:1em;visibility:hidden;opacity:0;
         transition:opacity 0.3s;}
       #checkbox.unchecked #checked {display:none;}
@@ -196,35 +196,67 @@ class PackeTab extends HTMLElement {
     this.themecolor = this.themecolorList[0]
     this.styles = document.createElement('style')
     this.styles.innerHTML = `
-      packe-tab {position:relative;display:block;min-width:20em;min-height:20em;margin:4px;
-        border:2px solid #ddd;border-radius:6px;overflow:hidden;}
-      titlebar {position:absolute;width:100%;height:2.2em;border-bottom:2px solid #ddd;;
-        display:flex;justify-content:space-evenly;align-items:flex-end;}
-      titlebar>span {padding:0 1em;border-bottom:6px solid #aaddaa;
-        user-select:none;font-weight:600;}
-      panel {position:absolute;top:2.2em;left:0;width:100%;height:calc(100% - 2.2em);
-        overflow-x:auto;overflow-y:hidden;white-space:nowrap;}
-      sheet {display:inline-block;width:100%;height:0;}
-      panel::-webkit-scrollbar {width:0.4em;height:0.4em;background-color:transparent;}
-      panel::-webkit-scrollbar-thumb {background-color:transparent;border-radius:0.1em;}
-      panel:hover::-webkit-scrollbar-thumb {background-color:#0004;}
+      packe-tab {position:relative;display:block;width:24em;height:24em;margin:4px;
+        border:2px solid #ddd;border-radius:6px;overflow:hidden;display:flex;flex-direction: column;}
+      p-titlebar {position:relative;width:100%;height:2.2em;
+        display:flex;overflow-x:auto;overflow-y:hidden;border-bottom:2px solid #ddd;}
+      p-titlebar>span {padding:0 1em;height:100%;align-items:center;
+        user-select:none;font-weight:600;scroll-snap-align:start;
+        display:inline-flex;white-space:nowrap;transition:all 0.3s;}
+      span.showing, p-titlebar>span:hover {background:#eee;}
+      p-panel {position:relative;width:100%;height:calc(100% - 2.2em);
+        overflow-x:auto;overflow-y:hidden;display:grid;grid-auto-flow:column;
+        grid-auto-columns:100%;scroll-snap-type:x mandatory;}
+      p-sheet {width:100%;height:100%;scroll-snap-align:start;overflow-x:hidden;overflow-y:auto;
+        overscroll-behavior-y:contain;padding:8px;box-sizing:border-box;}
+      p-titlebar::-webkit-scrollbar,p-panel::-webkit-scrollbar {display:none;}
+      p-sheet::-webkit-scrollbar {width:0.2em;background-color:transparent;}
+      p-sheet::-webkit-scrollbar-thumb {background-color:transparent;}
+      p-sheet:hover::-webkit-scrollbar-thumb {background-color:#0002;}
     `
-  }
-  connectedCallback() { this.rander() }
-  rander() {
     this.appendChild(this.styles)
-    for (const ele of this.querySelectorAll('panel>:not(sheet)')) { ele.remove() }
-    const titleList = []
-    for (const sheet of this.querySelectorAll('sheet')) {
-      titleList.push(
-        `<span>${sheet.getAttribute('title') ? sheet.getAttribute('title') : 'Untitled'}</span>`
-      )
+  }
+  connectedCallback() {
+    this.panel = this.querySelector('p-panel')
+    this.rander()
+    for (const span of this.querySelectorAll('p-titlebar>span')) {
+      span.addEventListener('click', (e) => {
+        this.matchTitle(e.target.getAttribute('index'))
+        e.target.scrollIntoView({ behavior: 'smooth', inline: 'center' })
+        setTimeout(() => {
+          this.panel.children[e.target.getAttribute('index')].scrollIntoView({ behavior: 'smooth' })
+        }, 250)
+      })
     }
-    this.querySelector('titleBar').innerHTML = titleList.join('')
+  }
+  rander(list) {
+    for (const ele of this.querySelectorAll('p-panel>:not(p-sheet)')) { ele.remove() }
+    if (list) this.panel.innerHTML = list
+    this.randerTitleBar()
+  }
+  randerTitleBar() {
+    const titleList = []
+    let i = 0;
+    for (const sheet of this.querySelectorAll('p-sheet')) {
+      titleList.push(`<span index="${i}">${sheet.getAttribute('p-id') ? sheet.getAttribute('p-id') : 'No p-id'}</span>`)
+      i++
+    }
+    this.querySelector('p-titlebar').innerHTML = titleList.join('')
+    this.matchTitle()
+  }
+  matchTitle(index) {
+    const i = index ? index : Math.floor(this.panel.scrollLeft / this.panel.scrollWidth * this.sheetList.length)
+    if (this.querySelector(`p-titlebar>span.showing`)) 
+      this.querySelector(`p-titlebar>span.showing`).classList.remove('showing')
+    this.querySelector(`p-titlebar>span[index="${i}"]`).classList.add('showing')
   }
   static get observedAttributes() { return ['thc'] }
   attributeChangedCallback(name, oldValue, newValue) { }
   randerThemecolor() { }
+  set show(index) { return this.querySelectorAll('p-sheet') }
+  get show() { return this.querySelectorAll('p-sheet') }
+  set sheetList(l) { this.rander(l) }
+  get sheetList() { return this.querySelectorAll('p-sheet') }
   set thc(v) {
     if (this.themecolorList.includes(v)) {
       this.themecolor = v

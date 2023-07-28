@@ -7,7 +7,10 @@
 
 ## Provided Elements
 
-![](/img/a1.png)
+![](/img/packe-input.png)
+![](/img/packe-button.png)
+![](/img/packe-checkbox.png)
+![](/img/packe-tab.png)
 
 ```HTML
 <packe-input></packe-input>
@@ -21,6 +24,17 @@
 
 <packe-checkbox thc="violet" checked="true" value="Grape"></packe-checkbox>
 <!-- Provided property: thc/checked/value -->
+
+<packe-tab thc="cyan">
+  <!-- Necessary structure -->
+  <p-panel>
+    <p-sheet p-title="😋longtitlelonglonglonglonglong">Title rule: length limited(20) 😋</p-sheet>
+    <!-- p-title -rander-> title -->
+    <p-sheet p-title="Sheet1">Title rule: length limited(20) 😋</p-sheet>
+    <p-sheet>Title rule:↑ length limited(20) 😋</p-sheet>
+  </p-panel>
+</packe-tab>
+<!-- Provided property: thc/sheetList/show -->
 ```
 
 > `thc` means themecolor
@@ -41,6 +55,7 @@ document.querySelector('packe- ... ')['thc'/'value' ...]
 > `<packe-input>`: *placeholder* / *value*  
 > `<packe-button>`: *thc* / *value*  
 > `<packe-checkbox>`: *thc* / *checked* / *value*  
+> `<packe-tab>`: *thc* / *sheetList* / *show*
 
 ### Listen events
 ```javascript

@@ -195,15 +195,24 @@ class PackeTab extends HTMLElement {
     this.themecolorList = ['green', 'cyan', 'violet', 'red', 'yellow']
     this.themecolor = this.themecolorList[0]
     this.styles = document.createElement('style')
+    this.titleBar = document.createElement('p-titlebar')
+    this.panel = this.querySelector('p-panel')
     this.styles.innerHTML = `
-      packe-tab {position:relative;display:block;width:24em;height:24em;margin:4px;
-        border:2px solid #ddd;border-radius:6px;overflow:hidden;display:flex;flex-direction: column;}
+      packe-tab {position:relative;display:block;width:20em;height:20em;margin:4px;
+        box-shadow:0 1px 1px 2px #0002;border-radius:8px;overflow:hidden;
+        display:flex;flex-direction:column;}
       p-titlebar {position:relative;width:100%;height:2.2em;
-        display:flex;overflow-x:auto;overflow-y:hidden;border-bottom:2px solid #ddd;}
+        display:flex;overflow-x:auto;overflow-y:hidden;}
       p-titlebar>span {padding:0 1em;height:100%;align-items:center;
         user-select:none;font-weight:600;scroll-snap-align:start;
-        display:inline-flex;white-space:nowrap;transition:all 0.3s;}
-      span.showing, p-titlebar>span:hover {background:#eee;}
+        display:inline-flex;white-space:nowrap;transition:all 0.3s;color:#666;
+        box-sizing:border-box;border-bottom:2px solid #eee;}
+      p-titlebar>span:hover {background:#eee;}
+      p-titlebar>span.green {background:#BBD6BB;color:#006600;border-bottom:2px solid #00660044;}
+      p-titlebar>span.cyan {background:#BAD5D5;color:#006666;border-bottom:2px solid #00666644;}
+      p-titlebar>span.violet {background:#C9B7D2;color:#440066;border-bottom:2px solid #44006644;}
+      p-titlebar>span.red {background:#D6C0BB;color:#661100;border-bottom:2px solid #66110044;}
+      p-titlebar>span.yellow {background:#D6D5BB;color:#666000;border-bottom:2px solid #66600044;}
       p-panel {position:relative;width:100%;height:calc(100% - 2.2em);
         overflow-x:auto;overflow-y:hidden;display:grid;grid-auto-flow:column;
         grid-auto-columns:100%;scroll-snap-type:x mandatory;}
@@ -214,6 +223,7 @@ class PackeTab extends HTMLElement {
       p-sheet::-webkit-scrollbar-thumb {background-color:transparent;}
       p-sheet:hover::-webkit-scrollbar-thumb {background-color:#0002;}
     `
+    this.insertBefore(this.titleBar, this.panel)
     this.appendChild(this.styles)
   }
   connectedCallback() {
@@ -221,48 +231,62 @@ class PackeTab extends HTMLElement {
     this.rander()
     for (const span of this.querySelectorAll('p-titlebar>span')) {
       span.addEventListener('click', (e) => {
-        this.matchTitle(e.target.getAttribute('index'))
-        e.target.scrollIntoView({ behavior: 'smooth', inline: 'center' })
-        setTimeout(() => {
-          this.panel.children[e.target.getAttribute('index')].scrollIntoView({ behavior: 'smooth' })
-        }, 250)
+        this.panel.children[e.target.getAttribute('index')].scrollIntoView({ behavior: 'smooth' })
       })
     }
+    this.panel.addEventListener('scroll', () => {
+      if (this.timer) {
+        clearTimeout(this.timer)
+        this.timer = null
+      }
+      this.timer = setTimeout(() => {
+        this.matchTitle()
+        // setTimeout(() => {
+        this.querySelector('p-titlebar>span.showing').scrollIntoView({ behavior: 'smooth', inline: 'center' })
+        // }, 1000)
+        this.timer = null
+      }, 50)
+    })
   }
   rander(list) {
     for (const ele of this.querySelectorAll('p-panel>:not(p-sheet)')) { ele.remove() }
     if (list) this.panel.innerHTML = list
-    this.randerTitleBar()
-  }
-  randerTitleBar() {
     const titleList = []
     let i = 0;
     for (const sheet of this.querySelectorAll('p-sheet')) {
-      titleList.push(`<span index="${i}">${sheet.getAttribute('p-id') ? sheet.getAttribute('p-id') : 'No p-id'}</span>`)
+      let title = sheet.getAttribute('p-title').replace(/[<>\\\/]/g, '')
+      title = title.length > 20 ? title.substring(0, 20) + '...' : title
+      titleList.push(`<span index="${i}">${title ? title : 'Untitled Sheet'}</span>`)
       i++
     }
-    this.querySelector('p-titlebar').innerHTML = titleList.join('')
+    this.titleBar.innerHTML = titleList.join('')
     this.matchTitle()
   }
   matchTitle(index) {
-    const i = index ? index : Math.floor(this.panel.scrollLeft / this.panel.scrollWidth * this.sheetList.length)
-    if (this.querySelector(`p-titlebar>span.showing`)) 
-      this.querySelector(`p-titlebar>span.showing`).classList.remove('showing')
-    this.querySelector(`p-titlebar>span[index="${i}"]`).classList.add('showing')
+    const i = index ? index : Math.floor(
+      this.panel.scrollLeft / this.panel.scrollWidth
+      * this.sheetList.length + 0.5
+    )
+    if (this.querySelector(`p-titlebar>span.showing`))
+      this.querySelector(`p-titlebar>span.showing`).className = ''
+    this.querySelector(`p-titlebar>span[index="${i}"]`).classList.add('showing', this.themecolor)
   }
   static get observedAttributes() { return ['thc'] }
-  attributeChangedCallback(name, oldValue, newValue) { }
-  randerThemecolor() { }
-  set show(index) { return this.querySelectorAll('p-sheet') }
-  get show() { return this.querySelectorAll('p-sheet') }
-  set sheetList(l) { this.rander(l) }
-  get sheetList() { return this.querySelectorAll('p-sheet') }
-  set thc(v) {
+  attributeChangedCallback(name, oldValue, newValue) { this.applyThemecolor(newValue) }
+  applyThemecolor(v) {
     if (this.themecolorList.includes(v)) {
       this.themecolor = v
-      this.randerThemecolor()
+      if (this.querySelector(`p-titlebar>span.showing`))
+       this.querySelector(`p-titlebar>span.showing`).className = 'showing ' + this.themecolor
     }
   }
+  set show(i) {
+    if (i < this.sheetList.length) this.querySelector(`p-titlebar>span[index="${i}"]`).click()
+  }
+  get show() { return this.querySelector('p-titlebar>span.showing').getAttribute('index') }
+  set sheetList(l) { this.rander(l) }
+  get sheetList() { return this.querySelectorAll('p-sheet') }
+  set thc(v) { this.applyThemecolor(v) }
   get thc() { return this.themecolor }
 }
 

@@ -7,11 +7,8 @@
 
 ## Provided Elements
 
-![](/img/packe-input.png)
-![](/img/packe-switch.png)
-![](/img/packe-button.png)
-![](/img/packe-checkbox.png)
-![](/img/packe-tab.png)
+![](/img/a1.png)
+![](/img/a2.png)
 
 ```HTML
 <packe-input></packe-input>

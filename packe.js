@@ -61,8 +61,9 @@ class PackeInput extends HTMLElement {
 class PackeSwitch extends HTMLElement {
   constructor() {
     super()
-    this.themecolor = thcListNoGray[0]
+    this.$thc = thcListNoGray[0]
     const shadow = this.attachShadow({ mode: 'closed' })
+    this.$state = 'off'
     this.styles = document.createElement('style')
     this.switch = document.createElement('div')
     this.point = document.createElement('div')
@@ -76,8 +77,8 @@ class PackeSwitch extends HTMLElement {
       }
       div#point {position:absolute;width:1.2em;height:1.2em;background:#fff;border-radius:100%;
         box-shadow:0 0 4px 1px #0002;transition:left 0.15s;top:0.2em;}
-      div#switch.on>div#point {left:0.2em;}
-      div#switch.off>div#point {left:calc(100% - 1.4em);}
+      div#switch.on>div#point {left:calc(100% - 1.4em);}
+      div#switch.off>div#point {left:0.2em;}
       div#switch.off {color:#666;background:#eee;box-shadow:inset 0 0 1px 1px #0002;}
       div#switch.off:hover {color:#222;background:#ddd;box-shadow:inset 0 0 2px 1px #0004;}
 
@@ -97,30 +98,32 @@ class PackeSwitch extends HTMLElement {
     shadow.appendChild(this.switch)
   }
   connectedCallback() {
-    this.changeThc(this.themecolor)
+    this.changeThc(this.$thc)
     this.switch.addEventListener('click', () => { this.changeState(this.$state === 'on' ? 'off' : 'on') })
   }
   static get observedAttributes() { return ['thc', 'state'] }
   attributeChangedCallback(name, oldValue, v) {
     if (name === 'thc') this.changeThc(v)
-    else if (name === 'state' && ['on', 'off'].includes(v)) this.changeState(v)
+    else if (name === 'state') this.changeState(v)
   }
   changeState(v) {
-    this.$state = v
-    this.switch.className = v === 'on'
-      ? `${this.themecolor} ${v}`
-      : 'off'
+    if (['on', 'off'].includes(v)) {
+      this.$state = v
+      this.switch.className = v === 'on'
+        ? `${this.$thc} ${v}`
+        : 'off'
+    }
   }
   changeThc(v) {
     if (thcListNoGray.includes(v)) {
-      this.themecolor = v
+      this.$thc = v
       this.switch.className = this.$state === 'on'
-      ? `${this.themecolor} on`
-      : 'off'
+        ? `${this.$thc} on`
+        : 'off'
     }
   }
   set thc(v) { this.changeThc(v) }
-  get thc() { return this.themecolor }
+  get thc() { return this.$thc }
   set state(v) { this.changeState(v) }
   get state() { return this.$state }
 }
@@ -132,7 +135,7 @@ class PackeSwitch extends HTMLElement {
 class PackeButton extends HTMLElement {
   constructor() {
     super()
-    this.themecolor = thcListWithGray[0]
+    this.$thc = thcListWithGray[0]
     const shadow = this.attachShadow({ mode: 'closed' })
     this.styles = document.createElement('style')
     this.button = document.createElement('div')
@@ -161,7 +164,7 @@ class PackeButton extends HTMLElement {
     shadow.appendChild(this.button)
   }
   connectedCallback() {
-    this.changeThc(this.themecolor)
+    this.changeThc(this.$thc)
     if (!this.getAttribute('value')) this.button.innerText = 'Button'
 
     this.button.addEventListener('click', () => {
@@ -176,12 +179,12 @@ class PackeButton extends HTMLElement {
   }
   changeThc(v) {
     if (thcListWithGray.includes(v)) {
-      this.themecolor = v
+      this.$thc = v
       this.button.className = v
     }
   }
   set thc(v) { this.changeThc(v) }
-  get thc() { return this.themecolor }
+  get thc() { return this.$thc }
   set value(v) { this.button.innerText = v }
   get value() { return this.button.innerText }
 }
@@ -193,7 +196,7 @@ class PackeButton extends HTMLElement {
 class PackeCheckbox extends HTMLElement {
   constructor() {
     super()
-    this.themecolor = thcListNoGray[0]
+    this.$thc = thcListNoGray[0]
     const shadow = this.attachShadow({ mode: 'closed' })
     this.$checked = false
     this.styles = document.createElement('style')
@@ -246,21 +249,21 @@ class PackeCheckbox extends HTMLElement {
     if (name === 'checked') this.toggleState(newValue === 'true')
     else if (name === 'value') this.text.innerText = newValue
     else if (thcListNoGray.includes(newValue)) {
-      this.themecolor = newValue
-      this.checkbox.className = this.$checked ? `checked ${this.themecolor}` : 'unchecked'
+      this.$thc = newValue
+      this.checkbox.className = this.$checked ? `checked ${this.$thc}` : 'unchecked'
     }
   }
   toggleState(to) {
     this.$checked = to ? true : false
-    this.checkbox.className = to ? `checked ${this.themecolor}` : 'unchecked'
+    this.checkbox.className = to ? `checked ${this.$thc}` : 'unchecked'
   }
   set thc(v) {
     if (thcListNoGray.includes(v)) {
-      this.themecolor = v
-      this.checkbox.className = this.$checked ? `checked ${this.themecolor}` : 'unchecked'
+      this.$thc = v
+      this.checkbox.className = this.$checked ? `checked ${this.$thc}` : 'unchecked'
     }
   }
-  get thc() { return this.themecolor }
+  get thc() { return this.$thc }
   set value(v) { this.text.innerText = v }
   get value() { return this.text.innerText }
   set checked(v) { this.toggleState(v) }
@@ -274,7 +277,7 @@ class PackeCheckbox extends HTMLElement {
 class PackeTab extends HTMLElement {
   constructor() {
     super()
-    this.themecolor = thcListNoGray[4]
+    this.$thc = thcListNoGray[4]
     this.styles = document.createElement('style')
     this.titleBar = document.createElement('p-titlebar')
     this.panel = this.querySelector('p-panel')
@@ -359,15 +362,15 @@ class PackeTab extends HTMLElement {
     )
     if (this.querySelector(`p-titlebar>span.showing`))
       this.querySelector(`p-titlebar>span.showing`).className = ''
-    this.querySelector(`p-titlebar>span[index="${i}"]`).classList.add('showing', this.themecolor)
+    this.querySelector(`p-titlebar>span[index="${i}"]`).classList.add('showing', this.$thc)
   }
   static get observedAttributes() { return ['thc'] }
   attributeChangedCallback(name, oldValue, newValue) { this.applyThemecolor(newValue) }
   applyThemecolor(v) {
     if (thcListNoGray.includes(v)) {
-      this.themecolor = v
+      this.$thc = v
       if (this.querySelector(`p-titlebar>span.showing`))
-        this.querySelector(`p-titlebar>span.showing`).className = 'showing ' + this.themecolor
+        this.querySelector(`p-titlebar>span.showing`).className = 'showing ' + this.$thc
     }
   }
   set show(i) {
@@ -377,7 +380,7 @@ class PackeTab extends HTMLElement {
   set sheetList(l) { this.rander(l) }
   get sheetList() { return this.querySelectorAll('p-sheet') }
   set thc(v) { this.applyThemecolor(v) }
-  get thc() { return this.themecolor }
+  get thc() { return this.$thc }
 }
 
 

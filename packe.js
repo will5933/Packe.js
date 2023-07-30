@@ -198,12 +198,12 @@ class PackeTab extends HTMLElement {
     this.titleBar = document.createElement('p-titlebar')
     this.panel = this.querySelector('p-panel')
     this.styles.innerHTML = `
-      packe-tab {position:relative;display:block;width:20em;height:20em;margin:4px;
+      packe-tab {position:relative;display:block;min-width:20em;min-height:20em;width:20em;height:20em;margin:8px;
         box-shadow:0 1px 1px 2px #0002;border-radius:8px;overflow:hidden;
         display:flex;flex-direction:column;}
       p-titlebar {position:relative;width:100%;height:2.2em;
         display:flex;overflow-x:auto;overflow-y:hidden;}
-      p-titlebar>span {padding:0 1em;height:100%;align-items:center;
+      p-titlebar>span {padding:0 1em;width:fit-content;max-width:18em;height:100%;align-items:center;
         user-select:none;font-weight:600;scroll-snap-align:start;
         display:inline-flex;white-space:nowrap;transition:all 0.3s;color:#666;
         box-sizing:border-box;border-bottom:2px solid #eee;}
@@ -231,7 +231,12 @@ class PackeTab extends HTMLElement {
     this.rander()
     for (const span of this.querySelectorAll('p-titlebar>span')) {
       span.addEventListener('click', (e) => {
-        this.panel.children[e.target.getAttribute('index')].scrollIntoView({ behavior: 'smooth' })
+        console.log(this.panel.children[e.target.getAttribute('index')].offsetLeft, this.panel.scrollLeft)
+        this.panel.scroll({
+          top: 0,
+          left: this.panel.children[e.target.getAttribute('index')].offsetLeft,
+          behavior: 'smooth'
+        })
       })
     }
     this.panel.addEventListener('scroll', () => {
@@ -240,10 +245,14 @@ class PackeTab extends HTMLElement {
         this.timer = null
       }
       this.timer = setTimeout(() => {
+        console.log('scrolled')
         this.matchTitle()
-        // setTimeout(() => {
-        this.querySelector('p-titlebar>span.showing').scrollIntoView({ behavior: 'smooth', inline: 'center' })
-        // }, 1000)
+        const showing = this.querySelector('p-titlebar>span.showing')
+        this.titleBar.scroll({
+          top: 0,
+          left: showing.offsetLeft - (this.titleBar.offsetWidth - showing.offsetWidth) / 2,
+          behavior: 'smooth'
+        })
         this.timer = null
       }, 50)
     })
@@ -277,7 +286,7 @@ class PackeTab extends HTMLElement {
     if (this.themecolorList.includes(v)) {
       this.themecolor = v
       if (this.querySelector(`p-titlebar>span.showing`))
-       this.querySelector(`p-titlebar>span.showing`).className = 'showing ' + this.themecolor
+        this.querySelector(`p-titlebar>span.showing`).className = 'showing ' + this.themecolor
     }
   }
   set show(i) {

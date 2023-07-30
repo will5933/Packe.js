@@ -12,6 +12,10 @@
 */
 'use strict'
 
+const thcListWithGray = ['gray', 'cyan', 'green', 'yellow', 'red', 'violet']
+const thcListNoGray = ['cyan', 'green', 'yellow', 'red', 'violet']
+
+
 class PackeInput extends HTMLElement {
   constructor() {
     super()
@@ -51,11 +55,84 @@ class PackeInput extends HTMLElement {
 }
 
 
+
+
+
+class PackeSwitch extends HTMLElement {
+  constructor() {
+    super()
+    this.themecolor = thcListNoGray[0]
+    const shadow = this.attachShadow({ mode: 'closed' })
+    this.styles = document.createElement('style')
+    this.switch = document.createElement('div')
+    this.point = document.createElement('div')
+    this.switch.id = 'switch'
+    this.switch.className = 'on'
+    this.point.id = 'point'
+    this.styles.innerHTML = `
+      :host {position:relative;display:block;width:3.2em;height:1.6em;margin:4px;}
+      div#switch {position:relative;border-radius:1.6em;width:100%;height:100%;
+        user-select:none;transform:translateZ(0);text-wrap:nowrap;transition:all 0.3s ease;
+      }
+      div#point {position:absolute;width:1.2em;height:1.2em;background:#fff;border-radius:100%;
+        box-shadow:0 0 4px 1px #0002;transition:left 0.15s;top:0.2em;}
+      div#switch.on>div#point {left:0.2em;}
+      div#switch.off>div#point {left:calc(100% - 1.4em);}
+      div#switch.off {color:#666;background:#eee;box-shadow:inset 0 0 1px 1px #0002;}
+      div#switch.off:hover {color:#222;background:#ddd;box-shadow:inset 0 0 2px 1px #0004;}
+
+      div#switch.green {color:#006600;background:#b3e6b3;box-shadow:inset 0 0 3px 1px #00660044;}
+      div#switch.green:hover {color:#005500;background:#9fdf9f;box-shadow:inset 0 0 6px 1px #00660044;}
+      div#switch.red {color:#661100;background:#e6bbb3;box-shadow:inset 0 0 3px 1px #66110044;}
+      div#switch.red:hover {color:#330900;background:#dfaa9f;box-shadow:inset 0 0 6px 1px #66110044;}
+      div#switch.cyan {color:#006666;background:#b3e5e6;box-shadow:inset 0 0 3px 1px #00666644;}
+      div#switch.cyan:hover {color:#003333;background:#9fdfdf;box-shadow:inset 0 0 6px 1px #00666644;}
+      div#switch.violet {color:#440066;background:#d5b3e6;box-shadow:inset 0 0 3px 1px #44006644;}
+      div#switch.violet:hover {color:#220033;background:#ca9fdf;box-shadow:inset 0 0 6px 1px #44006644;}
+      div#switch.yellow {color:#666000;background:#e6e2b3;box-shadow:inset 0 0 3px 1px #66600044;}
+      div#switch.yellow:hover {color:#333000;background:#dfda9f;box-shadow:inset 0 0 6px 1px #66600044;}
+    `
+    shadow.appendChild(this.styles)
+    this.switch.appendChild(this.point)
+    shadow.appendChild(this.switch)
+  }
+  connectedCallback() {
+    this.changeThc(this.themecolor)
+    this.switch.addEventListener('click', () => { this.changeState(this.$state === 'on' ? 'off' : 'on') })
+  }
+  static get observedAttributes() { return ['thc', 'state'] }
+  attributeChangedCallback(name, oldValue, v) {
+    if (name === 'thc') this.changeThc(v)
+    else if (name === 'state' && ['on', 'off'].includes(v)) this.changeState(v)
+  }
+  changeState(v) {
+    this.$state = v
+    this.switch.className = v === 'on'
+      ? `${this.themecolor} ${v}`
+      : 'off'
+  }
+  changeThc(v) {
+    if (thcListNoGray.includes(v)) {
+      this.themecolor = v
+      this.switch.className = this.$state === 'on'
+      ? `${this.themecolor} on`
+      : 'off'
+    }
+  }
+  set thc(v) { this.changeThc(v) }
+  get thc() { return this.themecolor }
+  set state(v) { this.changeState(v) }
+  get state() { return this.$state }
+}
+
+
+
+
+
 class PackeButton extends HTMLElement {
   constructor() {
     super()
-    this.themecolorList = ['green', 'gray', 'red', 'cyan', 'violet', 'yellow']
-    this.themecolor = this.themecolorList[1]
+    this.themecolor = thcListWithGray[0]
     const shadow = this.attachShadow({ mode: 'closed' })
     this.styles = document.createElement('style')
     this.button = document.createElement('div')
@@ -64,7 +141,7 @@ class PackeButton extends HTMLElement {
       div {position:relative;padding:0.5em;border-radius:0.5em;
         font-size:1em;font-weight:800;width:fit-content;height:calc(100% - 1em);user-select:none;
         transform:translateZ(0);text-wrap:nowrap;
-        transition:color 0.3s,background 0.3s,transform 0.1s ease,box-shadow 0.1s ease;
+        transition:color 0.3s,background 0.3s,transform 0.1s ease,box-shadow 0.3s ease;
       }
       div.green {color:#006600;background:#b3e6b3;box-shadow:0 1px 1px 1px #00660044;}
       div.green:hover {color:#005500;background:#9fdf9f;box-shadow:0 1px 2px 1px #00660066;}
@@ -98,7 +175,7 @@ class PackeButton extends HTMLElement {
     else if (name === 'value') this.button.innerText = newValue
   }
   changeThc(v) {
-    if (this.themecolorList.includes(v)) {
+    if (thcListWithGray.includes(v)) {
       this.themecolor = v
       this.button.className = v
     }
@@ -110,11 +187,13 @@ class PackeButton extends HTMLElement {
 }
 
 
+
+
+
 class PackeCheckbox extends HTMLElement {
   constructor() {
     super()
-    this.themecolorList = ['green', 'cyan', 'violet', 'red', 'yellow']
-    this.themecolor = this.themecolorList[0]
+    this.themecolor = thcListNoGray[0]
     const shadow = this.attachShadow({ mode: 'closed' })
     this.$checked = false
     this.styles = document.createElement('style')
@@ -166,7 +245,7 @@ class PackeCheckbox extends HTMLElement {
   attributeChangedCallback(name, oldValue, newValue) {
     if (name === 'checked') this.toggleState(newValue === 'true')
     else if (name === 'value') this.text.innerText = newValue
-    else if (this.themecolorList.includes(newValue)) {
+    else if (thcListNoGray.includes(newValue)) {
       this.themecolor = newValue
       this.checkbox.className = this.$checked ? `checked ${this.themecolor}` : 'unchecked'
     }
@@ -176,7 +255,7 @@ class PackeCheckbox extends HTMLElement {
     this.checkbox.className = to ? `checked ${this.themecolor}` : 'unchecked'
   }
   set thc(v) {
-    if (this.themecolorList.includes(v)) {
+    if (thcListNoGray.includes(v)) {
       this.themecolor = v
       this.checkbox.className = this.$checked ? `checked ${this.themecolor}` : 'unchecked'
     }
@@ -189,11 +268,13 @@ class PackeCheckbox extends HTMLElement {
 }
 
 
+
+
+
 class PackeTab extends HTMLElement {
   constructor() {
     super()
-    this.themecolorList = ['green', 'cyan', 'violet', 'red', 'yellow']
-    this.themecolor = this.themecolorList[0]
+    this.themecolor = thcListNoGray[4]
     this.styles = document.createElement('style')
     this.titleBar = document.createElement('p-titlebar')
     this.panel = this.querySelector('p-panel')
@@ -283,7 +364,7 @@ class PackeTab extends HTMLElement {
   static get observedAttributes() { return ['thc'] }
   attributeChangedCallback(name, oldValue, newValue) { this.applyThemecolor(newValue) }
   applyThemecolor(v) {
-    if (this.themecolorList.includes(v)) {
+    if (thcListNoGray.includes(v)) {
       this.themecolor = v
       if (this.querySelector(`p-titlebar>span.showing`))
         this.querySelector(`p-titlebar>span.showing`).className = 'showing ' + this.themecolor
@@ -306,3 +387,4 @@ customElements.define('packe-input', PackeInput)
 customElements.define('packe-button', PackeButton)
 customElements.define('packe-checkbox', PackeCheckbox)
 customElements.define('packe-tab', PackeTab)
+customElements.define('packe-switch', PackeSwitch)

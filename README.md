@@ -8,6 +8,7 @@
 ## Provided Elements
 
 ![](/img/packe-input.png)
+![](/img/packe-switch.png)
 ![](/img/packe-button.png)
 ![](/img/packe-checkbox.png)
 ![](/img/packe-tab.png)
@@ -17,6 +18,9 @@
 <packe-input placeholder="--" value="---"></packe-input>
 <!-- Provided property: placeholder/value -->
 <!-- Provided event: input -->
+
+<packe-switch state="on" thc="violet"></packe-switch>
+<!-- Provided property: thc/state -->
 
 <packe-button thc="yellow" value="警告"></packe-button>
 <!-- Provided property: thc/value -->
@@ -52,10 +56,11 @@ document.querySelector('packe- ... ')['thc'/'value' ...]
 ```
 
 > #### Provided property
-> `<packe-input>`: *placeholder* / *value*  
-> `<packe-button>`: *thc* / *value*  
-> `<packe-checkbox>`: *thc* / *checked* / *value*  
-> `<packe-tab>`: *thc* / *sheetList* / *show*
+> `<packe-input>`: *placeholder* | *value*  
+> `<packe-switch>`: *thc* | *state* = 'on'/'off'  
+> `<packe-button>`: *thc* | *value*  
+> `<packe-checkbox>`: *thc* | *checked* = true/false | *value*  
+> `<packe-tab>`: *thc* | *sheetList* | *show*
 
 ### Listen events
 ```javascript

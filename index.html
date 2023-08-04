@@ -13,7 +13,9 @@
 <body>
   <style>
     body {
-      padding: 10vh 0;
+      padding: 5vh 0;
+      background-color: #fff;
+      color: black;
       font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
     }
 
@@ -33,42 +35,42 @@
   <h2>packe-switch</h2>
   <div>
     <packe-switch></packe-switch>
-    <packe-switch state="on" thc="red"></packe-switch>
-    <packe-switch state="on" thc="green"></packe-switch>
-    <packe-switch state="on" thc="yellow"></packe-switch>
-    <packe-switch state="on" thc="violet"></packe-switch>
-    <packe-switch state="on" thc="cyan"></packe-switch>
+    <packe-switch state="on" thc="danger"></packe-switch>
+    <packe-switch state="on" thc="success"></packe-switch>
+    <packe-switch state="on" thc="warning"></packe-switch>
+    <packe-switch state="on" thc="info"></packe-switch>
+    <packe-switch state="on" thc="info"></packe-switch>
   </div>
 
   <h2>packe-button</h2>
   <div>
     <packe-button></packe-button>
-    <packe-button thc="green">hahahha</packe-button>
-    <packe-button thc="green" value="确认"></packe-button>
-    <packe-button thc="gray"></packe-button>
-    <packe-button thc="gray" value="取消"></packe-button>
-    <packe-button thc="red"></packe-button>
-    <packe-button thc="red" value="删除"></packe-button>
-    <packe-button thc="cyan"></packe-button>
-    <packe-button thc="cyan" value="下一步"></packe-button>
-    <packe-button thc="violet"></packe-button>
-    <packe-button thc="violet" value="完成"></packe-button>
-    <packe-button thc="yellow"></packe-button>
-    <packe-button thc="yellow" value="警告"></packe-button>
+    <packe-button thc="success">hahahha</packe-button>
+    <packe-button thc="success" value="确认"></packe-button>
+    <packe-button thc="primary"></packe-button>
+    <packe-button thc="primary" value="取消"></packe-button>
+    <packe-button thc="danger"></packe-button>
+    <packe-button thc="danger" value="删除"></packe-button>
+    <packe-button thc="info"></packe-button>
+    <packe-button thc="info" value="下一步"></packe-button>
+    <packe-button thc="info"></packe-button>
+    <packe-button thc="info" value="完成"></packe-button>
+    <packe-button thc="warning"></packe-button>
+    <packe-button thc="warning" value="警告"></packe-button>
   </div>
 
   <h2>packe-checkbox</h2>
   <div>
     <packe-checkbox value="Pear" checked="true"></packe-checkbox>
-    <packe-checkbox checked="true" thc="yellow" value="Banana"></packe-checkbox>
-    <packe-checkbox thc="red" checked="true" value="Apple"></packe-checkbox>
-    <packe-checkbox thc="cyan" value="Cyan" checked="true"></packe-checkbox>
-    <packe-checkbox checked="true" thc="violet" value="Grape"></packe-checkbox>
+    <packe-checkbox checked="true" thc="warning" value="Banana"></packe-checkbox>
+    <packe-checkbox thc="danger" checked="false" value="Apple"></packe-checkbox>
+    <packe-checkbox thc="info" value="info" checked="false"></packe-checkbox>
+    <packe-checkbox checked="true" thc="info" value="Grape"></packe-checkbox>
   </div>
 
   <h2>packe-tab</h2>
   <div>
-    <packe-tab thc="cyan">
+    <packe-tab thc="primary">
       <p-panel>
         <p-sheet p-title="😋longtitlelonglonglonglonglong">Title rule:↑ length limited(20) 😋</p-sheet>
         <p-sheet p-title="<h1></h1><script></script>">Title rule: NO HTML tags ↑</p-sheet>
@@ -95,18 +97,18 @@
           <p>使用一个不寻常的变量多酷啊，尤其是在长达 1-2 页（如果可以的话，你可以写得更长）的循环体中使用的时候。如果某人要研究循环内部实现的时候，他就很难很快地找出变量 x 其实是循环计数器啦。</p>
         </p-sheet>
         <p-sheet p-title="sheet 1" style="background:aliceblue;">
-          <packe-checkbox thc="cyan" value="Button" checked="false"></packe-checkbox>
-          <packe-checkbox thc="cyan" value="Button" checked="false"></packe-checkbox>
-          <packe-button thc="yellow"></packe-button>
-          <packe-checkbox thc="cyan" value="Hello" checked="true"></packe-checkbox>
-          <packe-checkbox thc="red" value="Hello" checked="true"></packe-checkbox>
-          <packe-checkbox thc="red" value="Hello" checked="true"></packe-checkbox>
-          <packe-checkbox thc="yellow" value="Hello" checked="true"></packe-checkbox>
-          <packe-checkbox thc="yellow" value="World" checked="true"></packe-checkbox>
-          <packe-checkbox thc="violet" value="World" checked="false"></packe-checkbox>
-          <packe-checkbox thc="violet" value="World" checked="true"></packe-checkbox>
-          <packe-checkbox thc="violet" value="World" checked="true"></packe-checkbox>
-          <packe-checkbox thc="cyan" value="World" checked="false"></packe-checkbox>
+          <packe-checkbox thc="info" value="Button" checked="false"></packe-checkbox>
+          <packe-checkbox thc="info" value="Button" checked="false"></packe-checkbox>
+          <packe-button thc="warning"></packe-button>
+          <packe-checkbox thc="info" value="Hello" checked="true"></packe-checkbox>
+          <packe-checkbox thc="danger" value="Hello" checked="true"></packe-checkbox>
+          <packe-checkbox thc="danger" value="Hello" checked="true"></packe-checkbox>
+          <packe-checkbox thc="warning" value="Hello" checked="true"></packe-checkbox>
+          <packe-checkbox thc="warning" value="World" checked="true"></packe-checkbox>
+          <packe-checkbox thc="info" value="World" checked="false"></packe-checkbox>
+          <packe-checkbox thc="info" value="World" checked="true"></packe-checkbox>
+          <packe-checkbox thc="info" value="World" checked="true"></packe-checkbox>
+          <packe-checkbox thc="info" value="World" checked="false"></packe-checkbox>
         </p-sheet>
         <p-sheet p-title="more">
           <packe-input style="width:100%;margin:0;"></packe-input>
@@ -118,12 +120,12 @@
         <p-sheet p-title="emojiB">😍😍😍</p-sheet>
         <p-sheet p-title="emojiA">😋😋😋</p-sheet>
         <!-- Illegal expression -->
-        <packe-checkbox checked="true" thc="violet" value="Grape"></packe-checkbox>
+        <packe-checkbox checked="true" thc="info" value="Grape"></packe-checkbox>
       </p-panel>
     </packe-tab>
-    <packe-tab thc="violet">
+    <packe-tab thc="info">
       <p-panel>
-        <p-sheet p-title="Hello World"><packe-button thc="violet" value="Hello"></packe-button></p-sheet>
+        <p-sheet p-title="Hello World"><packe-button thc="info" value="Hello"></packe-button></p-sheet>
         <p-sheet p-title="😋longtitlelonglonglonglonglong">Title rule: length limited(20) 😋</p-sheet>
       </p-panel>
     </packe-tab>

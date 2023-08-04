@@ -16,17 +16,17 @@
 <!-- Provided property: placeholder/value -->
 <!-- Provided event: input -->
 
-<packe-switch state="on" thc="violet"></packe-switch>
+<packe-switch state="on" thc="primary"></packe-switch>
 <!-- Provided property: thc/state -->
 
-<packe-button thc="yellow" value="警告"></packe-button>
+<packe-button thc="warning" value="警告"></packe-button>
 <!-- Provided property: thc/value -->
 <!-- Provided event: click -->
 
-<packe-checkbox thc="violet" checked="true" value="Grape"></packe-checkbox>
+<packe-checkbox thc="danger" checked="true" value="Grape"></packe-checkbox>
 <!-- Provided property: thc/checked/value -->
 
-<packe-tab thc="cyan">
+<packe-tab thc="info">
   <!-- Necessary structure -->
   <p-panel>
     <p-sheet p-title="😋longtitlelonglonglonglonglong">Title rule: length limited(20) 😋</p-sheet>
@@ -38,7 +38,7 @@
 <!-- Provided property: thc/sheetList/show -->
 ```
 
-> `thc` means themecolor
+> `thc`: primary / info / warning / danger / success
 
 ## Use
 ### Set / Get provided property
